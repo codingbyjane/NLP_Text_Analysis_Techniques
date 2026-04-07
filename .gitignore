@@ -1,0 +1,15 @@
+# VSCode
+.vscode/
+
+# Virtual Environment
+venv/
+.nlp_env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS
+.DS_Store
