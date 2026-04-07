@@ -16,6 +16,14 @@ nltk.download('stopwords')
 # Feature Extraction
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
+# Machine Learning Pipeline
+from sklearn.pipeline import Pipeline
+from sklearn.naive_bayes import MultinomialNB
+
+# Evaluation Metrics
+from sklearn.metrics import classification_report
+
+
 # Manual Bag of Words (BoW) Implementation
 
 # Defining Sample Corpus
@@ -64,6 +72,7 @@ for i, vector in enumerate(bow_matrix):
 
 # Using Scikit-learn's CountVectorizer for BoW
 
+# Define the reviews to be vectorized
 review_1="Loved the sound, no battery issues"
 review_2="Sound quality is good; battery life not good"
 
@@ -78,3 +87,33 @@ bow_df = pd.DataFrame(vectorize_bow_matrix.toarray(), columns=vectorizer.get_fea
 
 # Display the BoW DataFrame
 print(f"\nBoW Matrix using CountVectorizer: {bow_df}")
+
+
+# Implementing a Naive Bayes classifier pipeline
+
+# Create a sample dataset of reviews and their corresponding labels (1 for positive, 0 for negative)
+reviews_df = pd.DataFrame({
+    'review text': ['Loved the sound, no battery issues', 'Sound quality is good; battery life not good', 'The sound is amazing and battery lasts long', 'Not satisfied with the sound quality and battery performance'],
+    'label': [1, 0, 1, 0]
+})
+
+naive_bayes_pipeline = Pipeline([
+      ("vectorizer", CountVectorizer(stop_words='english', ngram_range=(1, 2))), # Step 1: Convert text to BoW features
+      ("classifier", MultinomialNB()) # Step 2: Train a Naive Bayes classifier on the BoW features
+])
+
+naive_bayes_pipeline.fit(reviews_df['review text'], reviews_df['label']) # Fit the pipeline to the reviews and their labels
+
+# Predict the labels for the training data and generate a classification report
+predictions = naive_bayes_pipeline.predict(reviews_df['review text'])
+print(f"\nPredictions: {predictions}")
+
+# Generate a classification report
+classification_report_dict = classification_report(reviews_df['label'], predictions, output_dict=True)
+
+# Create a DataFrame to display the classification report
+classification_report_df = pd.DataFrame(classification_report_dict).transpose()
+print(f"\nClassification Report:\n{classification_report_df}")
+
+
+# Using TfidfVectorizer for TF-IDF representation
