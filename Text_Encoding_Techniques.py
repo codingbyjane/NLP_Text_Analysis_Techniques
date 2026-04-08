@@ -104,7 +104,7 @@ reviews_df = pd.DataFrame({
 
                     'label': [1, 0, 1, 0, 0, 1, 0, 0]
     })
-
+ 
 naive_bayes_pipeline = Pipeline([
       ("vectorizer", CountVectorizer(stop_words=list(stopwords_set), ngram_range=(1, 2))), # Step 1: Convert text to BoW features
       ("classifier", MultinomialNB()) # Step 2: Train a Naive Bayes classifier on the BoW features
