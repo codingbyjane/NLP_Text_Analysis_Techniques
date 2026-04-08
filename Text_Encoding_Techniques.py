@@ -93,12 +93,20 @@ print(f"\nBoW Matrix using CountVectorizer: {bow_df}")
 
 # Create a sample dataset of reviews and their corresponding labels (1 for positive, 0 for negative)
 reviews_df = pd.DataFrame({
-    'review text': ['Loved the sound, no battery issues', 'Sound quality is good; battery life not good', 'The sound is amazing and battery lasts long', 'Not satisfied with the sound quality and battery performance'],
-    'label': [1, 0, 1, 0]
-})
+    'review text': ['Loved the sound, no battery issues',
+                    'Sound quality is good; battery life not good', 
+                    'The sound is amazing and battery lasts long', 
+                    'Not satisfied with the sound quality and battery performance',
+                    'Battery life is excellent but sound quality is poor',
+                    'I am very happy with the sound and battery',
+                    'The sound is terrible and battery dies quickly',
+                    'Great sound quality but battery life is disappointing'],
+
+                    'label': [1, 0, 1, 0, 0, 1, 0, 0]
+    })
 
 naive_bayes_pipeline = Pipeline([
-      ("vectorizer", CountVectorizer(stop_words='english', ngram_range=(1, 2))), # Step 1: Convert text to BoW features
+      ("vectorizer", CountVectorizer(stop_words=list(stopwords_set), ngram_range=(1, 2))), # Step 1: Convert text to BoW features
       ("classifier", MultinomialNB()) # Step 2: Train a Naive Bayes classifier on the BoW features
 ])
 
@@ -117,3 +125,17 @@ print(f"\nClassification Report:\n{classification_report_df}")
 
 
 # Using TfidfVectorizer for TF-IDF representation
+tfidf_vectorizer = TfidfVectorizer(stop_words=list(stopwords_set), min_df=1, ngram_range=(1, 2)) # Initialize TfidfVectorizer with the previously defined set of English stopwords, set minimum document frequency, and n-gram range (unigrams and bigrams)
+
+# Fitting the TfidfVectorizer to the reviews and transforming them into a TF-IDF matrix
+tfidf_matrix = tfidf_vectorizer.fit_transform(reviews_df['review text'])
+
+# Create a DataFrame to display the TF-IDF matrix with feature names as columns
+tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
+print(f"\nTF-IDF Matrix using TfidfVectorizer:\n{tfidf_df}")
+
+all_feature_names = tfidf_vectorizer.get_feature_names_out()
+
+for word in all_feature_names:
+      index = tfidf_vectorizer.vocabulary_.get(word) # Get the index of the word in the TF-IDF matrix
+      print(f"Word: '{word}' - Index in TF-IDF Matrix: {index}")
