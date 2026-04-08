@@ -11,5 +11,11 @@ __pycache__/
 *.pyo
 *.pyd
 
+# Plots & Figures
+*.png
+*.jpg
+*.jpeg
+*.svg
+
 # OS
 .DS_Store
