@@ -130,8 +130,15 @@ tfidf_vectorizer = TfidfVectorizer(stop_words=list(stopwords_set), min_df=1, ngr
 # Fitting the TfidfVectorizer to the reviews and transforming them into a TF-IDF matrix
 tfidf_matrix = tfidf_vectorizer.fit_transform(reviews_df['review text'])
 
+# Display the learned vocabulary and feature names from the TfidfVectorizer after fitting the data
+vocabulary = tfidf_vectorizer.vocabulary_
+feature_names = tfidf_vectorizer.get_feature_names_out()
+
+print(f"Learned vocabulary: {vocabulary}")
+print(f"Feature names: {feature_names}")
+
 # Create a DataFrame to display the TF-IDF matrix with feature names as columns
-tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
+tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
 print(f"\nTF-IDF Matrix using TfidfVectorizer:\n{tfidf_df}")
 
 all_feature_names = tfidf_vectorizer.get_feature_names_out()
