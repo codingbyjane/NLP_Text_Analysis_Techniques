@@ -134,15 +134,19 @@ tfidf_matrix = tfidf_vectorizer.fit_transform(reviews_df['review text'])
 vocabulary = tfidf_vectorizer.vocabulary_
 feature_names = tfidf_vectorizer.get_feature_names_out()
 
-print(f"Learned vocabulary: {vocabulary}")
-print(f"Feature names: {feature_names}")
+print(f"\nLearned vocabulary: {vocabulary}")
+print(f"\nFeature names: {feature_names}")
 
 # Create a DataFrame to display the TF-IDF matrix with feature names as columns
 tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
 print(f"\nTF-IDF Matrix using TfidfVectorizer:\n{tfidf_df}")
 
-all_feature_names = tfidf_vectorizer.get_feature_names_out()
+tfidf_word_scores = np.asarray(tfidf_matrix.sum(axis=0)).flatten() # Calculate the sum of TF-IDF scores for each word across all reviews
+tfidf_word_scores_dict = dict(zip(feature_names, tfidf_word_scores)) # Create a dictionary to map each word to its corresponding TF-IDF score
+print(f"\nTF-IDF Word Scores: {list(tfidf_word_scores_dict.items())[:10]}\n")
 
-for word in all_feature_names:
+
+# Display the score of each word in the TF-IDF matrix for each word in the feature names list
+for word in feature_names:
       index = tfidf_vectorizer.vocabulary_.get(word) # Get the index of the word in the TF-IDF matrix
-      print(f"Word: '{word}' - Index in TF-IDF Matrix: {index}")
+      print(f"Word: '{word}' - TF-IDF Score: {tfidf_word_scores_dict.get(word, 0)}")
