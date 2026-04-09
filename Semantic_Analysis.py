@@ -59,15 +59,16 @@ lsa_matrix = LSA_model.fit_transform(tfidf_matrix)
 print(f"LSA Matrix Shape: {lsa_matrix.shape}\n") # This is the matrix A shaped n*k where n=10 (number of reviews) and k=2 (number of topics/components)
 print(f"LSA Matrix (lower-dimensional representation):\n{lsa_matrix}\n")
 
-singular_values = LSA_model.singular_values_ # Get the singular values from the fitted LSA model
+
+singular_values = LSA_model.singular_values_ # Get the singular values from the fitted LSA model. Each singular value quantifies how much "variance" (information) that topic/component explains in the data.
 print(f"Singular Values: {singular_values}\n")
 
 
-# Display the right singular matrix P which contains the document-topic associations. Each row corresponds to one review and each column represents a topic. The values indicate the strength of correlation between each review and each topic. Higher values indicate a stronger association with that topic.
+# Display the left singular matrix P which contains the document-topic associations. Each row corresponds to one review and each column represents a topic. The values indicate the strength of correlation between each review and each topic. Higher values indicate a stronger association with that topic.
 P = LSA_model.transform(tfidf_matrix)
 print(f"Document-Topic Matrix (P):\n{P}\n")
 
-# Display the left singular matrix K^T (transposed) which contains the topic-word associations. Each row represents a topic and each column corresponds to a word/feature. The values indicate the strength of association between each topic and each word.
+# Display the right singular matrix K^T (transposed) which contains the topic-word associations. Each row represents a topic and each column corresponds to a word/feature. The values indicate the strength of association between each topic and each word.
 K_transposed = LSA_model.components_
 print(f"LSA Components (Topic-Word Associations):\n{K_transposed}\n")
 
