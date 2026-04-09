@@ -9,6 +9,7 @@ import seaborn as sns
 # TF-IDF Vectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
+from sklearn.decomposition import LatentDirichletAllocation
 
 # Sample Corpus
 reviews_df = pd.DataFrame({
@@ -49,6 +50,10 @@ plt.xticks(rotation=45, ha='right') # Rotate x-axis labels for better readabilit
 plt.yticks(rotation=0) # Keep y-axis labels horizontal
 #plt.show()
 
+
+
+# Implementing Latent Semantic Analysis (LSA) using TruncatedSVD on the TF-IDF matrix
+
 # Initialize the LSA Model using TruncatedSVD (Singular Value Decomposition)
 LSA_model = TruncatedSVD(n_components=2, n_iter=10, algorithm='randomized', random_state=42) # Reduce the dimensionality to 2 components for visualization (those components are the topics and ultimately the dimensions of the new space)
 
@@ -82,3 +87,13 @@ l=lsa_matrix[0] # Extract the first row of the LSA matrix (the left singular doc
 print("Review 0:")
 for i,topic in enumerate(l): 
     print("Topic", i, ":", topic*100) # Scale the topic values by 100 for readability. The values indicate the strength of association between the first review and each of the two topics. In this case, the first review has a stronger association with Topic 0 (63.27%) compared to Topic 1 (-35.53%).
+
+
+
+# Implementing Latent Dirichlet Allocation (LDA) for Topic Modeling on the same TF-IDF matrix
+
+# Initializing the LDA model with 2 topics/components
+LDA_model = LatentDirichletAllocation(n_components=2, learning_method='online', random_state=42, max_iter=10)
+
+# Fit the LDA model to the TF-IDF matrix and transform it into a document-topic distribution
+lda_matrix = LDA_model.fit_transform(tfidf_matrix)
