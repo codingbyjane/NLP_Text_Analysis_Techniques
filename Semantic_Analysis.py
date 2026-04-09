@@ -56,7 +56,7 @@ LSA_model = TruncatedSVD(n_components=2, n_iter=10, algorithm='randomized', rand
 lsa_matrix = LSA_model.fit_transform(tfidf_matrix)
 
 
-print(f"LSA Matrix Shape: {lsa_matrix.shape}\n") # This is the matrix A shaped n*k where n=10 (number of reviews) and k=2 (number of topics/components)
+print(f"LSA Matrix Shape: {lsa_matrix.shape}\n") # This is the matrix A shaped n*k where n=10 (number of reviews) and k=2 (number of topics/components). This is the document-topic matrix P which contains the associations between reviews and topics in the reduced-dimensional space.
 print(f"LSA Matrix (lower-dimensional representation):\n{lsa_matrix}\n")
 
 
@@ -70,6 +70,7 @@ print(f"Document-Topic Matrix (P):\n{P}\n")
 
 # Display the right singular matrix K^T (transposed) which contains the topic-word associations. Each row represents a topic and each column corresponds to a word/feature. The values indicate the strength of association between each topic and each word.
 K_transposed = LSA_model.components_
+print(f"Shape of the right singular matrix K^T (transposed): {K_transposed.shape}\n")
 print(f"LSA Components (Topic-Word Associations):\n{K_transposed}\n")
 
 # Display the diagonal matrix L which represents the importance of each topic (singular values). The values on the diagonal indicate the amount of variance explained by each topic. Higher values indicate more important topics that capture more of the underlying structure in the data.
@@ -77,7 +78,7 @@ L = np.diag(singular_values)
 print(f"Diagonal Matrix L (Topic Importance):\n{L}\n")
 
 
-l=lsa_matrix[0]
+l=lsa_matrix[0] # Extract the first row of the LSA matrix (the left singular document-topic matrix P) which corresponds to the first review ([ 0.63269217 -0.35527444]).
 print("Review 0:")
 for i,topic in enumerate(l): 
-    print("Topic ", i, ": ", topic*100)
+    print("Topic", i, ":", topic*100) # Scale the topic values by 100 for readability. The values indicate the strength of association between the first review and each of the two topics. In this case, the first review has a stronger association with Topic 0 (63.27%) compared to Topic 1 (-35.53%).
