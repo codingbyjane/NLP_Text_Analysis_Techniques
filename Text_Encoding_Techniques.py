@@ -93,18 +93,20 @@ print(f"\nBoW Matrix using CountVectorizer: {bow_df}")
 
 # Create a sample dataset of reviews and their corresponding labels (1 for positive, 0 for negative)
 reviews_df = pd.DataFrame({
-    'review text': ['Loved the sound, no battery issues',
+      'review text': ['Loved the sound, no battery issues',
                     'Sound quality is good; battery life not good', 
                     'The sound is amazing and battery lasts long', 
                     'Not satisfied with the sound quality and battery performance',
                     'Battery life is excellent but sound quality is poor',
                     'I am very happy with the sound and battery',
                     'The sound is terrible and battery dies quickly',
-                    'Great sound quality but battery life is disappointing'],
+                    'Great sound quality but battery life is disappointing',
+                    "The sound is fantastic but battery life is mediocre",
+                    "I am impressed with the sound quality but disappointed with the battery performance"],
 
-                    'label': [1, 0, 1, 0, 0, 1, 0, 0]
+      'label': [1, 0, 1, 0, 0, 1, 0, 0, 1, 0]
     })
- 
+
 naive_bayes_pipeline = Pipeline([
       ("vectorizer", CountVectorizer(stop_words=list(stopwords_set), ngram_range=(1, 2))), # Step 1: Convert text to BoW features
       ("classifier", MultinomialNB()) # Step 2: Train a Naive Bayes classifier on the BoW features
