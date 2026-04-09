@@ -86,7 +86,7 @@ print(f"Diagonal Matrix L (Topic Importance):\n{L}\n")
 l=lsa_matrix[0] # Extract the first row of the LSA matrix (the left singular document-topic matrix P) which corresponds to the first review ([ 0.63269217 -0.35527444]).
 print("Review 0:")
 for i,topic in enumerate(l): 
-    print("Topic", i, ":", topic*100) # Scale the topic values by 100 for readability. The values indicate the strength of association between the first review and each of the two topics. In this case, the first review has a stronger association with Topic 0 (63.27%) compared to Topic 1 (-35.53%).
+    print("Topic", i, ":", round(topic*100, 2), "%") # Scale the topic values by 100 for readability. The values indicate the strength of association between the first review and each of the two topics. In this case, the first review has a stronger association with Topic 0 (63.27%) compared to Topic 1 (-35.53%).
 
 
 
@@ -97,3 +97,15 @@ LDA_model = LatentDirichletAllocation(n_components=2, learning_method='online', 
 
 # Fit the LDA model to the TF-IDF matrix and transform it into a document-topic distribution
 lda_matrix = LDA_model.fit_transform(tfidf_matrix)
+
+
+print(f"LDA Matrix Shape: {lda_matrix.shape}\n") # This is the topic-document distribution matrix shaped n*k where n=10 (number of reviews) and k=2 (number of topics). Each row corresponds to a review and each column represents a topic. The values indicate the probability of each review belonging to each topic.
+print(f"LDA Document-Topic Distribution:\n{lda_matrix}\n")
+
+# Display the word-topic distribution matrix (components) from the fitted LDA model. Each row represents a topic and each column corresponds to a unique word/feature. The values indicate the strength of association between each topic and each word.
+word_topic_distribution = LDA_model.components_
+print(f"Word-Topic Distribution (LDA Components):\n{word_topic_distribution}\n")
+
+print("Review 0: ")
+for i,topic in enumerate(lda_matrix[0]):
+    print("Topic", i, ":", round(topic*100, 2), "%")
