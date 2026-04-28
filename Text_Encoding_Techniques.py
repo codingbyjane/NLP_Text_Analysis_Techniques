@@ -3,7 +3,9 @@
 # Data Manipulation
 import numpy as np
 import pandas as pd
-from collections import defaultdict, Counter
+from collections import defaultdict, Counter\
+
+# Similarity Calculation
 from scipy.spatial.distance import euclidean
 
 # NLP Libraries
@@ -25,10 +27,11 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import classification_report
 
 
+
 # Manual Bag of Words (BoW) Implementation
 
 # Defining Sample Corpus
-corpus = ['Loved the sound, no battery issues','Sound quality is good; battery life not good']
+corpus = ['Loved the sound, no battery issues', 'Sound quality is good; battery life not good']
 
 # Load English Stopwords
 stopwords_set = set(stopwords.words('english'))
@@ -38,27 +41,30 @@ stopwords_set.discard('not')
 stopwords_set.discard('no')
 
 # Text Preprocessing: Tokenization, Lowercasing, and Stopword Removal
-reviews=[]
-vocabulary=set([]) # Set to store unique words for building the vocabulary
 
-for review in corpus:
-    cleaned_text = [word.lower() for word in word_tokenize(review) if word.isalpha() and word.lower() not in stopwords_set]
+reviews=[] # Will store a list of lists, where each inner list contains the cleaned tokens for one review
+vocabulary=set([]) # Set to automatically store only unique words for building the vocabulary
+
+for review in corpus: # Itearte over each review in the corpus (the list of strings)
+    cleaned_text = [word.lower() for word in word_tokenize(review) if word.isalpha() and word.lower() not in stopwords_set] # Returns a list of cleaned tokens for each review by tokenizing the review, converting to lowercase, filtering out non-alphabetic tokens, and removing stopwords
     reviews.append(cleaned_text)
 
     for word in cleaned_text:
             vocabulary.add(word)
 
-print(f"Vocabulary Size: {len(vocabulary)}")
+print(f"Vocabulary Size: {len(vocabulary)}") # Outputs 9 unique words in the vocabulary after preprocessing
 print(f"Vocabulary: {vocabulary}")
 
 # Building the index dictionary to map each word in the vocabulary to a unique index for constructing the BoW matrix
-index_dictionary = {word:index for index, word in enumerate(vocabulary)}
+index_dictionary = {word:index for index, word in enumerate(vocabulary)} # Enumerate pairs each item in the vocabulary with a unique index, creating a dictionary where keys are words and values are their corresponding indices
 print(f"Index Dictionary: {index_dictionary}")
 
 
-# Initialize BoW matrix: rows = reviews, columns = vocabulary
+# Initialize a 2D BoW matrix to hold word frequencies: rows = reviews, columns = unique words in the vocabulary
 bow_matrix = np.zeros((len(reviews), len(vocabulary)), dtype=int)
 
+
+# Populate the BoW matrix by counting the frequency of each word in each review and updating the corresponding cell in the matrix based on the index of the word from the index dictionary
 for index, review in enumerate(reviews):
       word_counts = Counter(review) # Count the frequency of each word in the review
 
