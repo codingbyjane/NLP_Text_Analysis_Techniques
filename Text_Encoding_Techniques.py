@@ -4,6 +4,7 @@
 import numpy as np
 import pandas as pd
 from collections import defaultdict, Counter
+from scipy.spatial.distance import euclidean
 
 # NLP Libraries
 import nltk
@@ -68,6 +69,11 @@ for index, review in enumerate(reviews):
 # Display the BoW matrix for each review
 for i, vector in enumerate(bow_matrix):
     print(f"\nBoW for review {i}: {vector}")
+
+
+# Calculate the Euclidean distance between the BoW vectors of the two reviews to measure their similarity
+distance = euclidean(bow_matrix[0], bow_matrix[1])
+print(f"\nEuclidean Distance between the two reviews: {distance}")
 
 
 # Using Scikit-learn's CountVectorizer for BoW
