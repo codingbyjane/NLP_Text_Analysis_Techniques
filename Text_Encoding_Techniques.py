@@ -57,24 +57,25 @@ print(f"Vocabulary: {vocabulary}")
 
 # Building the index dictionary to map each word in the vocabulary to a unique index for constructing the BoW matrix
 index_dictionary = {word:index for index, word in enumerate(vocabulary)} # Enumerate pairs each item in the vocabulary with a unique index, creating a dictionary where keys are words and values are their corresponding indices
-print(f"Index Dictionary: {index_dictionary}")
+print(f"Index Dictionary: {index_dictionary}\n")
 
 
 # Initialize a 2D BoW matrix to hold word frequencies: rows = reviews, columns = unique words in the vocabulary
 bow_matrix = np.zeros((len(reviews), len(vocabulary)), dtype=int)
 
 
-# Populate the BoW matrix by counting the frequency of each word in each review and updating the corresponding cell in the matrix based on the index of the word from the index dictionary
-for index, review in enumerate(reviews):
-      word_counts = Counter(review) # Count the frequency of each word in the review
+# Populate the initially empty BoW matrix by counting the frequency of each word in each review and updating the corresponding cell in the matrix based on the index of the word from the index dictionary
 
-      for word, count in word_counts.items(): # Iterate over each tuple of (word, count) in the word_counts dictionary
-            if word in index_dictionary:
-                  bow_matrix[index, index_dictionary[word]] = count # Update the BoW matrix with the count of each word
+for index, review in enumerate(reviews): # Enumerate pairs each review with its row index (0 for first review, 1 for second, etc.).
+      word_counts = Counter(review) # Count the frequency of each word in the current review. Result: Counter({'sound': 1, 'quality': 1, 'battery': 1, 'life': 1, 'not': 1, 'good': 1})
+
+      for word, count in word_counts.items(): # Iterate over and unpack each tuple of (word, count) in the word_counts dictionary. .items() returns a key-value pair for each word and its corresponding count in the review.
+            if word in index_dictionary: # Checks if the word exists in the vocabulary
+                  bow_matrix[index, index_dictionary[word]] = count # Update the BoW matrix with the frequency count of each word
 
 # Display the BoW matrix for each review
 for i, vector in enumerate(bow_matrix):
-    print(f"\nBoW for review {i}: {vector}")
+    print(f"BoW for review {i}: {vector}")
 
 
 # Calculate the Euclidean distance between the BoW vectors of the two reviews to measure their similarity
@@ -98,7 +99,7 @@ vectorize_bow_matrix = vectorizer.fit_transform([review_1, review_2])
 bow_df = pd.DataFrame(vectorize_bow_matrix.toarray(), columns=vectorizer.get_feature_names_out())
 
 # Display the BoW DataFrame
-print(f"\nBoW Matrix using CountVectorizer: {bow_df}")
+print(f"\nBoW Matrix using CountVectorizer:\n{bow_df}")
 
 
 # Implementing a Naive Bayes classifier pipeline
@@ -138,6 +139,7 @@ classification_report_df = pd.DataFrame(classification_report_dict).transpose()
 print(f"\nClassification Report:\n{classification_report_df}")
 
 
+
 # Using TfidfVectorizer for TF-IDF representation
 tfidf_vectorizer = TfidfVectorizer(stop_words=list(stopwords_set), min_df=1, ngram_range=(1, 2)) # Initialize TfidfVectorizer with the previously defined set of English stopwords, set minimum document frequency, and n-gram range (unigrams and bigrams)
 
@@ -153,11 +155,13 @@ print(f"\nFeature names: {feature_names}")
 
 # Create a DataFrame to display the TF-IDF matrix with feature names as columns
 tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
+print(f"\n")
 print(f"\nTF-IDF Matrix using TfidfVectorizer:\n{tfidf_df}")
 
 tfidf_word_scores = np.asarray(tfidf_matrix.sum(axis=0)).flatten() # Calculate the sum of TF-IDF scores for each word across all reviews
 tfidf_word_scores_dict = dict(zip(feature_names, tfidf_word_scores)) # Create a dictionary to map each word to its corresponding TF-IDF score
 print(f"\nTF-IDF Word Scores: {list(tfidf_word_scores_dict.items())[:10]}\n")
+print(f"\n")
 
 
 # Display the score of each word in the TF-IDF matrix for each word in the feature names list
