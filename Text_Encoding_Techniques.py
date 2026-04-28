@@ -96,7 +96,7 @@ vectorizer = CountVectorizer(stop_words='english', ngram_range=(1, 2))
 vectorize_bow_matrix = vectorizer.fit_transform([review_1, review_2]) # vectorize_bow_matrix shape: (2, 23)  # 2 reviews, 23 n-gram features
 
 data = vectorize_bow_matrix.toarray() # Convert the sparse matrix to a dense array for easier manipulation and visualization
-print(f"\nBoW Matrix using CountVectorizer:\n{data}") # Display the BoW matrix as a dense array, where rows correspond to reviews and columns correspond to n-gram features extracted by the CountVectorizer. Each cell contains the count of the corresponding n-gram in the review.
+print(f"\nBoW Matrix using CountVectorizer in a dense array format:\n{data}") # Display the BoW matrix as a dense array, where rows correspond to reviews and columns correspond to n-gram features extracted by the CountVectorizer. Each cell contains the count of the corresponding n-gram in the review.
 
 # Create a DataFrame to display the BoW matrix with feature names as columns
 bow_df = pd.DataFrame(data, columns=vectorizer.get_feature_names_out())
