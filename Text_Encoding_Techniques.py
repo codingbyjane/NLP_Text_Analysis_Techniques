@@ -95,11 +95,11 @@ vectorizer = CountVectorizer(stop_words='english', ngram_range=(1, 2))
 # Fit the vectorizer to the corpus and transform the reviews into a sparse BoW matrix
 vectorize_bow_matrix = vectorizer.fit_transform([review_1, review_2]) # vectorize_bow_matrix shape: (2, 23)  # 2 reviews, 23 n-gram features
 
-data = vectorize_bow_matrix.toarray() # Convert the sparse matrix to a dense array for easier manipulation and visualization
-print(f"\nBoW Matrix using CountVectorizer in a dense array format:\n{data}") # Display the BoW matrix as a dense array, where rows correspond to reviews and columns correspond to n-gram features extracted by the CountVectorizer. Each cell contains the count of the corresponding n-gram in the review.
+dense_bow_matrix = vectorize_bow_matrix.toarray() # Convert the sparse matrix to a dense array for easier manipulation and visualization
+print(f"\nBoW Matrix using CountVectorizer in a dense array format:\n{dense_bow_matrix}") # Display the BoW matrix as a dense array, where rows correspond to reviews and columns correspond to n-gram features extracted by the CountVectorizer. Each cell contains the count of the corresponding n-gram in the review.
 
 # Create a DataFrame to display the BoW matrix with feature names as columns
-bow_df = pd.DataFrame(data, columns=vectorizer.get_feature_names_out())
+bow_df = pd.DataFrame(dense_bow_matrix, columns=vectorizer.get_feature_names_out())
 
 # Display the BoW DataFrame
 print(f"\nBoW Matrix using CountVectorizer:\n{bow_df}")
@@ -144,9 +144,9 @@ print(f"\nClassification Report:\n{classification_report_df}")
 
 
 # Using TfidfVectorizer for TF-IDF representation
-tfidf_vectorizer = TfidfVectorizer(stop_words=list(stopwords_set), min_df=1, ngram_range=(1, 2)) # Initialize TfidfVectorizer with the previously defined set of English stopwords, set minimum document frequency, and n-gram range (unigrams and bigrams)
+tfidf_vectorizer = TfidfVectorizer(stop_words=list(stopwords_set), min_df=1, ngram_range=(1, 2)) # Initialize TfidfVectorizer with the previously defined set of English stopwords, set minimum document frequency (meaning the word must appear in at least 1 document to be included in the vocabulary), and n-gram range (unigrams and bigrams)
 
-# Fitting the TfidfVectorizer to the reviews and transforming them into a TF-IDF matrix
+# Fitting the TfidfVectorizer to the reviews (the 'review text' column) and transforming them into a TF-IDF matrix
 tfidf_matrix = tfidf_vectorizer.fit_transform(reviews_df['review text'])
 
 # Display the learned vocabulary and feature names from the TfidfVectorizer after fitting the data
@@ -156,8 +156,11 @@ feature_names = tfidf_vectorizer.get_feature_names_out()
 print(f"\nLearned vocabulary: {vocabulary}")
 print(f"\nFeature names: {feature_names}")
 
+# Convert the sparse TF-IDF matrix to a dense array for easier manipulation and visualization. This is a pd.DataFrame acceptable format that will be passed to a DataFrame for better display of the TF-IDF scores for each feature (word) in each review.
+dense_tfidf_matrix = tfidf_matrix.toarray()
+
 # Create a DataFrame to display the TF-IDF matrix with feature names as columns
-tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
+tfidf_df = pd.DataFrame(dense_tfidf_matrix, columns=feature_names)
 print(f"\n")
 print(f"\nTF-IDF Matrix using TfidfVectorizer:\n{tfidf_df}")
 
