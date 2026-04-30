@@ -48,20 +48,20 @@ plt.xlabel("Features (Top 20 Words)")
 plt.ylabel("Reviews")
 plt.xticks(rotation=45, ha='right') # Rotate x-axis labels for better readability
 plt.yticks(rotation=0) # Keep y-axis labels horizontal
-#plt.show()
+plt.show()
 
 
 
 # Implementing Latent Semantic Analysis (LSA) using TruncatedSVD on the TF-IDF matrix
 
 # Initialize the LSA Model using TruncatedSVD (Singular Value Decomposition)
-LSA_model = TruncatedSVD(n_components=2, n_iter=10, algorithm='randomized', random_state=42) # Reduce the dimensionality to 2 components for visualization (those components are the topics and ultimately the dimensions of the new space)
+LSA_model = TruncatedSVD(n_components=2, n_iter=10, algorithm='randomized', random_state=42) # Reduce the dimensionality to 2 components (k = 2) for visualization (those components are the topics and ultimately the dimensions of the new space)
 
-# Fit the LSA model to the TF-IDF matrix and transform it into a lower-dimensional space
+# Fit the LSA model to the TF-IDF matrix and transform it into a lower-dimensional space. Note: the LSA algorithm can be implemented on both TF-IDF and BoW matrices, but here we are using the TF-IDF matrix to capture the importance of words in the reviews while reducing dimensionality.
 lsa_matrix = LSA_model.fit_transform(tfidf_matrix)
 
 
-print(f"LSA Matrix Shape: {lsa_matrix.shape}\n") # This is the matrix A shaped n*k where n=10 (number of reviews) and k=2 (number of topics/components). This is the document-topic matrix P which contains the associations between reviews and topics in the reduced-dimensional space.
+print(f"LSA Matrix Shape: {lsa_matrix.shape}\n") # This is the matrix P shaped n*k where n=10 (number of reviews) and k=2 (number of topics/components). This is the document-topic matrix P which contains the associations between reviews and topics in the reduced-dimensional space.
 print(f"LSA Matrix (lower-dimensional representation):\n{lsa_matrix}\n")
 
 
@@ -76,9 +76,9 @@ print(f"Document-Topic Matrix (P):\n{P}\n")
 # Display the right singular matrix K^T (transposed) which contains the topic-word associations. Each row represents a topic and each column corresponds to a word/feature. The values indicate the strength of association between each topic and each word.
 K_transposed = LSA_model.components_
 print(f"Shape of the right singular matrix K^T (transposed): {K_transposed.shape}\n")
-print(f"LSA Components (Topic-Word Associations):\n{K_transposed}\n")
+print(f"LSA Components in a K transposed matrix (Topic-Word Associations):\n{K_transposed}\n")
 
-# Display the diagonal matrix L which represents the importance of each topic (singular values). The values on the diagonal indicate the amount of variance explained by each topic. Higher values indicate more important topics that capture more of the underlying structure in the data.
+# Display the diagonal matrix L which represents the importance of each topic (singular values). The values on the diagonal indicate the amount of variance (the amount of captured information) explained by each topic. Higher values indicate more important topics that capture more of the underlying structure & information in the data.
 L = np.diag(singular_values)
 print(f"Diagonal Matrix L (Topic Importance):\n{L}\n")
 
@@ -93,19 +93,20 @@ for i,topic in enumerate(l):
 # Implementing Latent Dirichlet Allocation (LDA) for Topic Modeling on the same TF-IDF matrix
 
 # Initializing the LDA model with 2 topics/components
-LDA_model = LatentDirichletAllocation(n_components=2, learning_method='online', random_state=42, max_iter=10)
+LDA_model = LatentDirichletAllocation(n_components=2, max_iter=10, learning_method='online', random_state=42) # Again, define only 2 topics for simplicity. The learning method 'online' is suitable for larger datasets and allows the model to update its parameters incrementally as it processes the data in batches. The random state is set for reproducibility of results.
 
 # Fit the LDA model to the TF-IDF matrix and transform it into a document-topic distribution
 lda_matrix = LDA_model.fit_transform(tfidf_matrix)
 
 
-print(f"LDA Matrix Shape: {lda_matrix.shape}\n") # This is the topic-document distribution matrix shaped n*k where n=10 (number of reviews) and k=2 (number of topics). Each row corresponds to a review and each column represents a topic. The values indicate the probability of each review belonging to each topic.
+print(f"\nLDA Matrix Shape: {lda_matrix.shape}\n") # This is the topic-document distribution matrix shaped n*k where n=10 (number of reviews) and k=2 (number of topics). Each row corresponds to a review and each column represents a topic. The values indicate the probability of each review belonging to each topic. Note: the same thing as the P matrix in LSA but here the values are probabilities that sum to 1 across each row (for each review) since LDA is a probabilistic model, while in LSA the values can be positive or negative and do not necessarily sum to 1.
 print(f"LDA Document-Topic Distribution:\n{lda_matrix}\n")
 
-# Display the word-topic distribution matrix (components) from the fitted LDA model. Each row represents a topic and each column corresponds to a unique word/feature. The values indicate the strength of association between each topic and each word.
+# Display the word-topic distribution matrix (components) from the fitted LDA model. Each row represents a topic and each column corresponds to a unique word/feature. The values indicate the strength of association between each topic and each word. This is basically the equivalent of the K^T matrix in LSA but here it represents the word-topic associations in a probabilistic manner. Higher values indicate a stronger association between a topic and a word, meaning that the word is more likely to be associated with that topic.
 word_topic_distribution = LDA_model.components_
 print(f"Word-Topic Distribution (LDA Components):\n{word_topic_distribution}\n")
 
+# Display the topic distribution for the first review (the first row of the LDA matrix). The values indicate the probability of the first review belonging to each of the two topics. Higher values indicate a stronger association with that topic. In this case, the first review has a stronger association with Topic 0 compared to Topic 1, similar to the LSA results but here we are interpreting it in terms of probabilities.
 print("Review 0: ")
 for i,topic in enumerate(lda_matrix[0]):
     print("Topic", i, ":", round(topic*100, 2), "%")
