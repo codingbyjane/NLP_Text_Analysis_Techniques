@@ -30,11 +30,11 @@ reviews_df = pd.DataFrame({
 
 
 # Initialize the TF-IDF Vectorizer (create an instance of the TfidfVectorizer class)
-tfidf_vectorizer = TfidfVectorizer(use_idf=True, max_features=20, smooth_idf=True) # Smooth IDF adds 1 to document frequencies to prevent the zero division possibility
+tfidf_vectorizer = TfidfVectorizer(use_idf=True, max_features=20, smooth_idf=True) # Smooth IDF adds 1 to document frequencies to prevent the zero division possibility. The maximum number of features, i.e. unique learned words in the vocabulary, is set to 20 for simplicity. This means that the vectorizer will only consider the top 20 most important words in the corpus based on their TF-IDF scores when creating the feature matrix. This helps to reduce dimensionality and focus on the most relevant terms in the reviews.
 
-# Fit the TF-IDF Vectorizer to the review texts and transform them into a TF-IDF matrix
+# Fit the TF-IDF Vectorizer to the review texts (the 'review text' column) and transform them into a TF-IDF matrix
 tfidf_matrix = tfidf_vectorizer.fit_transform(reviews_df['review text'])
-dense_tfidf_matrix = np.array(tfidf_matrix.toarray())
+dense_tfidf_matrix = np.array(tfidf_matrix.toarray()) # Convert the sparse TF-IDF matrix to a dense array for easier manipulation and visualization. This is a pd.DataFrame acceptable format that will be passed to a DataFrame for better display of the TF-IDF scores for each feature (word) in each review.
 
 # Display the shape of the TF-IDF matrix
 print(f"TF-IDF Matrix Shape: {tfidf_matrix.shape}\n") # This is the matrix B shaped n*m where n=10 (number of reviews) and m=20 (number of features)
