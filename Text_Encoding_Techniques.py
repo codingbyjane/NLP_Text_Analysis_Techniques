@@ -47,16 +47,16 @@ vocabulary=set([]) # Set to automatically store only unique words for building t
 
 for review in corpus: # Itearte over each review in the corpus (the list of strings)
     cleaned_text = [word.lower() for word in word_tokenize(review) if word.isalpha() and word.lower() not in stopwords_set] # Returns a list of cleaned tokens for each review by tokenizing the review, converting to lowercase, filtering out non-alphabetic tokens, and removing stopwords
-    reviews.append(cleaned_text)
+    reviews.append(cleaned_text) # Reviews becomes a list of lists, where each inner list contains the cleaned tokens for one review. For example: [['loved', 'sound', 'battery', 'issues'], ['sound', 'quality', 'good', 'battery', 'life', 'not', 'good']]
 
     for word in cleaned_text:
-            vocabulary.add(word)
+            vocabulary.add(word) # Add each cleaned word to the vocabulary set, ensuring that only unique words are stored
 
 print(f"Vocabulary Size: {len(vocabulary)}") # Outputs 9 unique words in the vocabulary after preprocessing
 print(f"Vocabulary: {vocabulary}")
 
 # Building the index dictionary to map each word in the vocabulary to a unique index for constructing the BoW matrix
-index_dictionary = {word:index for index, word in enumerate(vocabulary)} # Enumerate pairs each item in the vocabulary with a unique index, creating a dictionary where keys are words and values are their corresponding indices
+index_dictionary = {word:index for index, word in enumerate(vocabulary)} # Enumerate pairs each item in the vocabulary with a unique index, creating a dictionary where keys are words and values are their corresponding indices. Note: the enumerate method returns tupels of (index, word) for each word in the vocabulary, and the dictionary comprehension constructs the index_dictionary by mapping each word to its index.
 print(f"Index Dictionary: {index_dictionary}\n")
 
 
@@ -74,8 +74,8 @@ for index, review in enumerate(reviews): # Enumerate pairs each review with its 
                   bow_matrix[index, index_dictionary[word]] = count # Update the BoW matrix with the frequency count of each word
 
 # Display the BoW matrix for each review
-for i, vector in enumerate(bow_matrix):
-    print(f"BoW for review {i}: {vector}")
+for row_index, vector in enumerate(bow_matrix):
+    print(f"BoW for review {row_index}: {vector}")
 
 
 # Calculate the Euclidean distance between the BoW vectors of the two reviews to measure their similarity
